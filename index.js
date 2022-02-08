@@ -1,3 +1,3 @@
 console.log("sanju thapa");
 console.log("happy birthday");
-console.log("happy tuesday friend,");
+console.log("happy tuesday friend,!");
