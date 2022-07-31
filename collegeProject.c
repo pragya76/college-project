@@ -247,6 +247,9 @@ void fee(int mm)
                         system("cls");
                         float calculatedFee = ((month)*student.fee) + (day * (student.fee / 30));
                         float finalFee = calculatedFee - student.paidAmount + student.fine;
+                        float totalFeeUpToToday = ((tm.tm_mon + 1) * student.fee) + (tm.tm_mday * (student.fee / 30));
+
+                        printf("\nStudent monthly fee :: %d", student.fee);
                         if (student.advance > 0)
                         {
                             printf("\nAdvance amount :: %.2f", student.advance);
@@ -259,8 +262,14 @@ void fee(int mm)
                             printf("\nfine amount :: %.2f", student.fine);
                             printf("\nPrevious paid amount including due and fine :: %.2f", student.paidAmount);
                         }
-                        printf("\nStudent monthly fee :: %d", student.fee);
-                        printf("\nfee upto calculated date :: %.2f", calculatedFee);
+                        else
+                        {
+                            printf("\nDue amount :: 0");
+                            printf("\nfine amount :: 0");
+                            printf("\nPrevious paid amount :: %.2f", student.paidAmount);
+                        }
+                        printf("\nfee upto calculated date  :: %.2f", calculatedFee);
+                        printf("\nfee upto today date :: %.2f", totalFeeUpToToday);
                         printf("\nfinal fee :: %.2f", finalFee);
                     }
 
