@@ -191,16 +191,19 @@ void addStudent()
 
 void fee(int mm)
 {
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
     int choice;
     system("cls");
     printf("\n\t******************************************************************");
     printf("\n\t<<<<<<<<<<<<<<<<<<<<<<       FEE     >>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
     printf("\n\t******************************************************************");
 
-    FILE *f, *t;
+    FILE *f;
     int a = 0;
     char name[50], c = 'y';
-    int clas, roll, month, day;
+    int roll, month, day;
+    float adv, due, fine;
 
     while (c == 'y' || c == 'Y')
     {
@@ -256,6 +259,7 @@ void fee(int mm)
                             printf("\nfine amount :: %.2f", student.fine);
                             printf("\nPrevious paid amount including due and fine :: %.2f", student.paidAmount);
                         }
+                        printf("\nStudent monthly fee :: %d", student.fee);
                         printf("\nfee upto calculated date :: %.2f", calculatedFee);
                         printf("\nfinal fee :: %.2f", finalFee);
                     }
@@ -295,7 +299,29 @@ void fee(int mm)
 
                     system("cls");
                     float calculatedFee = ((month)*student.fee) + (day * (student.fee / 30));
-                    printf("\nStudent monthly fee :: %.2f", student.fee);
+                    float totalFeeUpToToday = ((tm.tm_mon + 1) * student.fee) + (tm.tm_mday * (student.fee / 30));
+
+                    if ((calculatedFee > totalFeeUpToToday))
+                    {
+                        adv = calculatedFee - totalFeeUpToToday;
+                        due = 0;
+                        fine = 0;
+                        printf("\nAdvance amount :: %.2f", adv);
+                        printf("\nDue amount :: %.2f", due);
+                        printf("\nfine amount :: %.2f", fine);
+                    }
+                    else
+                    {
+                        adv = 0;
+                        due = totalFeeUpToToday - calculatedFee;
+                        fine = (totalFeeUpToToday - calculatedFee) * 0.1;
+                        printf("\nAdvance amount :: %.2f", 0.0);
+                        printf("\nDue amount :: %.2f", due);
+                        printf("\nfine amount :: %.2f", fine);
+                    }
+
+                    printf("\nStudent monthly fee :: %d", student.fee);
+                    printf("\nfee upto today date :: %.2f", totalFeeUpToToday);
                     printf("\nfee upto calculated date :: %.2f", calculatedFee);
 
                     // fwrite(&student, sizeof(student), 1, t);
