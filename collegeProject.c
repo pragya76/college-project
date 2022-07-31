@@ -18,7 +18,7 @@ struct studentStructure
     char program[50];
     int roll;
     int fee;
-    float fine, total, advance, due;
+    float fine, total, advance, due, paidAmount;
     struct dateStructure date;
 
 } student;
@@ -120,7 +120,6 @@ void exitNow()
 //------------------------------------------------------add student------------------------------------------------------------
 void addStudent()
 {
-    int month = 0, day = 0; // cdat=month till which fee is cleared
 
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
@@ -151,26 +150,26 @@ void addStudent()
         printf("\nEnter month  till which Fee is paid:");
         fflush(stdin);
         printf("\nMonth:");
-        scanf("%2d", &month);
+        scanf("%2d", &student.date.month);
         printf("\nDay:");
-        scanf("%2d", &day);
+        scanf("%2d", &student.date.day);
 
         student.total = ((tm.tm_mon + 1) * student.fee) + (tm.tm_mday * (student.fee / 30));
-        float feePaidUpTo = ((month)*student.fee) + (day * (student.fee / 30));
+        float feePaidUpTo = ((student.date.month) * student.fee) + (student.date.day * (student.fee / 30));
         if ((feePaidUpTo > student.total))
         {
             student.advance = feePaidUpTo - student.total;
             student.due = 0;
             student.fine = 0;
+            student.paidAmount = feePaidUpTo;
         }
         else
         {
             student.advance = 0;
             student.due = student.total - feePaidUpTo;
             student.fine = (student.total - feePaidUpTo) * 0.1;
+            student.paidAmount = feePaidUpTo;
         }
-
-        printf("-----------------------------------------------\n");
 
         // for calculation of total fee
         fs = fopen("student.txt", "ab+"); // opening a binary file in apend mode
@@ -189,76 +188,146 @@ void addStudent()
 }
 
 //---------------------------------------------------------student fee---------------------------------------------
+
 void fee(int mm)
 {
+    int choice;
     system("cls");
     printf("\n\t******************************************************************");
-
     printf("\n\t<<<<<<<<<<<<<<<<<<<<<<       FEE     >>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-
     printf("\n\t******************************************************************");
+
     FILE *f, *t;
     int a = 0;
     char name[50], c = 'y';
-    int clas, roll, month, dif;
+    int clas, roll, month, day;
+
     while (c == 'y' || c == 'Y')
     {
-        int a = 1, day = 0;
-        fflush(stdin);
-        printf("\n\nEnter name:: ");
-        scanf("%[^\n]", name);
-        printf("\n\nEnter roll:: ");
-        fflush(stdin);
-        scanf("%d", &roll);
-        f = fopen("student.txt", "rb+");
-        t = fopen("te", "wb");
-        while (fread(&student, sizeof(student), 1, f) == 1)
-        {
-            if (strcmp(student.name, name) == 0 && roll == student.roll)
-            {
-                a = 0;
-                printf("\n\nEnter the month & day till which fee to be paid:: ");
-                fflush(stdin);
-                scanf("%d", &month);
-                month = chkdat(month, day);
-                dif = mm - student.date.month;
-                student.fine = (dif * student.fee) * 0.01;
-                student.due = (dif)*student.fee;
-                if (student.fine < 0)
-                    student.fine = 0;
-                if (student.due < 0)
-                    student.due = 0;
-                if (student.total < 0)
-                    student.total = 0;
-                student.total = student.fine + student.due + student.advance;
-                printf("\nfine :: %.2f", student.fine);
-                printf("\ndue :: %.2f", student.due);
-                printf("\ntotal :: %.2f", student.total);
-                printf("\nadvance :: %.2f", student.advance);
-                student.date.month = month;
-                student.total = 0;
-                student.fine = 0;
-                student.due = 0;
-                fwrite(&student, sizeof(student), 1, t);
-            }
-        }
-        if (a == 1)
-            printf("\n\nRECORD NOT FOUND");
-        printf("\n\n");
-        system("pause");
-        fflush(stdin);
 
-        fclose(f);
-        fclose(t);
-        system("del student");
-        system("ren te, student");
-        printf("\n\n Press Esc To Exit or Do you want to continue(press y or Y");
+        printf("\n\n\t\tPLEASE CHOOSE CALCULATE TYPE::");
+        printf("\n\n\t\t1::with paid::");
+        printf("\n\n\t\t2::without paid::");
+        printf("\n\n\t\t3::Exit");
+        printf("\n\n\t\t::Enter your choice:: ");
+        fflush(stdin);
+        scanf("%d", &choice);
+        if (choice == 1)
+        {
+            int a = 1, day = 0;
+            fflush(stdin);
+            printf("\n\nEnter name:: ");
+            scanf("%[^\n]", name);
+            printf("\n\nEnter roll:: ");
+            fflush(stdin);
+            scanf("%d", &roll);
+            f = fopen("student.txt", "rb+");
+            while (fread(&student, sizeof(student), 1, f) == 1)
+            {
+                if (strcmp(student.name, name) == 0 && roll == student.roll)
+                {
+                    a = 0;
+                    printf("\n\nEnter the month & day till which fee to be Calculated:: ");
+                    fflush(stdin);
+                    printf("\nMonth:");
+                    scanf("%2d", &month);
+                    printf("\nDay:");
+                    scanf("%2d", &day);
+                    if ((student.date.month + (student.date.day / 30)) > (month + (day / 30)))
+                    {
+                        system("cls");
+                        printf("Date must be greater than previous paid date\n");
+                        printf("Previous paid date is month:%d,day:%d", student.date.month, student.date.day);
+                    }
+                    else
+                    {
+                        system("cls");
+                        float calculatedFee = ((month)*student.fee) + (day * (student.fee / 30));
+                        float finalFee = calculatedFee - student.paidAmount + student.fine;
+                        if (student.advance > 0)
+                        {
+                            printf("\nAdvance amount :: %.2f", student.advance);
+                            printf("\nPrevious paid amount including advance :: %.2f", student.paidAmount);
+                        }
+                        else if (
+                            student.due > 0)
+                        {
+                            printf("\nDue amount :: %.2f", student.due);
+                            printf("\nfine amount :: %.2f", student.fine);
+                            printf("\nPrevious paid amount including due and fine :: %.2f", student.paidAmount);
+                        }
+                        printf("\nfee upto calculated date :: %.2f", calculatedFee);
+                        printf("\nfinal fee :: %.2f", finalFee);
+                    }
+
+                    // fwrite(&student, sizeof(student), 1, t);
+                }
+            }
+            if (a == 1)
+                printf("\n\nRECORDS NOT FOUND");
+            else
+                printf("\n\nRECORDS SUCCESSFULLY  MODIFIED");
+            printf("\n\n");
+            system("pause");
+        }
+
+        else if (choice == 2)
+        {
+            int a = 1, day = 0;
+            fflush(stdin);
+            printf("\n\nEnter name:: ");
+            scanf("%[^\n]", name);
+            printf("\n\nEnter roll:: ");
+            fflush(stdin);
+            scanf("%d", &roll);
+            f = fopen("student.txt", "rb+");
+            while (fread(&student, sizeof(student), 1, f) == 1)
+            {
+                if (strcmp(student.name, name) == 0 && roll == student.roll)
+                {
+                    a = 0;
+                    printf("\n\nEnter the month & day till which fee to be Calculated:: ");
+                    fflush(stdin);
+                    printf("\nMonth:");
+                    scanf("%2d", &month);
+                    printf("\nDay:");
+                    scanf("%2d", &day);
+
+                    system("cls");
+                    float calculatedFee = ((month)*student.fee) + (day * (student.fee / 30));
+                    printf("\nStudent monthly fee :: %.2f", student.fee);
+                    printf("\nfee upto calculated date :: %.2f", calculatedFee);
+
+                    // fwrite(&student, sizeof(student), 1, t);
+                }
+            }
+            if (a == 1)
+                printf("\n\nRECORDS NOT FOUND");
+            else
+                printf("\n\nFEE SUCCESSFULLY  CALCULATED");
+            printf("\n\n");
+            system("pause");
+        }
+        else if (choice == 3)
+            // ext();
+            start();
+        else
+        {
+            printf("\n\n\n\t\tINVALID ENTRY!!!!\n\n\t\t");
+            system("pause");
+            fee(1);
+        }
+
+        printf("\n\n Press Esc To Exit or Do you want to continue calculate fee(press y or Y)");
         fflush(stdin);
         c = getch();
+        system("cls");
         if (c == 27)
             start();
     }
-    getch();
+    fflush(stdin);
+    printf("\n\n");
+    system("pause");
 }
 //------------------------------------------------------serarc student------------------------------------------------------------
 void searchStudent()
@@ -396,7 +465,7 @@ void searchStudent()
             system("pause");
             searchStudent(1);
         }
-        printf("\n\n Press Esc To Exit or Do you want to continue searching(press y or Y");
+        printf("\n\n Press Esc To Exit or Do you want to continue searching(press y or Y)");
         fflush(stdin);
         c = getch();
         if (c == 27)
@@ -601,7 +670,7 @@ void modifyStudent()
             modifyStudent(1);
         }
 
-        printf("\n\n Press Esc To Exit or Do you want to continue modifying records(press y or Y");
+        printf("\n\n Press Esc To Exit or Do you want to continue modifying records(press y or Y)");
         fflush(stdin);
         c = getch();
         if (c == 27)
@@ -653,7 +722,7 @@ void deleteStudent()
         fclose(temp);
         remove("student.txt");               // remove student
         rename("delete.tmp", "student.txt"); // make tmt file as student.txt
-        printf("\n\n Press Esc To Exit or Do you wish to continue deleting other records(press y or Y");
+        printf("\n\n Press Esc To Exit or Do you wish to continue deleting other records(press y or Y)");
         fflush(stdin);
         c = getch();
         if (c == 27)
@@ -696,7 +765,7 @@ void addStaff()
         fclose(ft);
         printf("\nRecorded Successfully !! ");
 
-        printf("\n\nPress Esc To Exit or Do you want to continue adding records(press y or Y");
+        printf("\n\nPress Esc To Exit or Do you want to continue adding records(press y or Y)");
         fflush(stdin);
         c = getch();
         if (c == 27)
@@ -859,7 +928,7 @@ void searchStaff()
             system("pause");
             searchStudent(1);
         }
-        printf("\n\n Press Esc To Exit or Do you want to continue searching(press y or Y");
+        printf("\n\n Press Esc To Exit or Do you want to continue searching(press y or Y)");
         fflush(stdin);
         c = getch();
         if (c == 27)
@@ -1032,7 +1101,7 @@ void modifyStaff()
             modifyStudent(1);
         }
 
-        printf("\n\n Press Esc To Exit or Do you want to continue modifying records(press y or Y");
+        printf("\n\n Press Esc To Exit or Do you want to continue modifying records(press y or Y)");
         fflush(stdin);
         c = getch();
         if (c == 27)
@@ -1084,7 +1153,7 @@ void deleteStaff()
         fclose(temp1);
         remove("staff.txt");                    // remove student
         rename("deleteStaff.tmp", "staff.txt"); // make tmt file as student.txt
-        printf("\n\n Press Esc To Exit or Do you wish to continue deleting other records(press y or Y");
+        printf("\n\n Press Esc To Exit or Do you wish to continue deleting other records(press y or Y)");
         fflush(stdin);
         c = getch();
         c = getch();
@@ -1152,7 +1221,7 @@ void salary(int mm)
                 system("ren te, teacher");
             }
         }
-        printf("\n\n Press Esc To Exit or Do you want to continue(press y or Y");
+        printf("\n\n Press Esc To Exit or Do you want to continue(press y or Y)");
         fflush(stdin);
         c = getch();
         if (c == 27)
