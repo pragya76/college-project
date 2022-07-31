@@ -266,7 +266,7 @@ void fee(int mm)
             if (a == 1)
                 printf("\n\nRECORDS NOT FOUND");
             else
-                printf("\n\nRECORDS SUCCESSFULLY  MODIFIED");
+                printf("\n\nFEE CALCULATED  SUCCESSFULLY");
             printf("\n\n");
             system("pause");
         }
