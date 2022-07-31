@@ -189,7 +189,7 @@ void addStudent()
 
 //---------------------------------------------------------student fee---------------------------------------------
 
-void fee(int mm)
+void fee()
 {
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
@@ -1198,7 +1198,7 @@ void deleteStaff()
     getch();
 }
 //-------------------------------------------------salary------------------------------------------------------------------
-void salary(int mm)
+void salary()
 {
     system("cls");
     printf("\n\t******************************************************************");
@@ -1230,10 +1230,10 @@ void salary(int mm)
                 fflush(stdin);
                 scanf("%d", &month);
                 month = chkdat(month, day);
-                staff.advance = (month - mm - 1) * staff.salary;
+                staff.advance = (month - 0 - 1) * staff.salary;
                 if (staff.advance < 0)
                     staff.advance = 0;
-                lastSalary = mm - staff.date.month; // months of salary left to be paid
+                lastSalary = 0 - staff.date.month; // months of salary left to be paid
                 if (lastSalary < 0)
                     lastSalary = 0;
                 staff.total = staff.advance + staff.salary * (1 + lastSalary);
@@ -1323,7 +1323,8 @@ void start()
             start();
             break;
         case 5:
-            fee(1);
+            fee();
+            start();
             break;
         case 6:
             start();
@@ -1357,11 +1358,9 @@ void start()
         printf("\n\t\t6->  Go Back");
         printf("\n");
         printf("\n");
-        // time_t t;   //for current date and time//
-        // time(&t);
+
         for (i = 0; i < 80; i++)
             printf("-");
-        // printf("\nCurrent date and time : %s", ctime(&t)); // to displau current date and time//
         for (i = 0; i < 80; i++)
             printf("-");
         printf("\n\n Enter Your Choice  ");
@@ -1386,8 +1385,8 @@ void start()
             start();
             break;
         case 5:
-        // salary(mm);
-        // start();
+            salary();
+            start();
         case 6:
             start();
             break;
