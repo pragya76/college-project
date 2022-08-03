@@ -28,7 +28,8 @@ struct staffStructure
     char address[20];
     char degree[50];
     int contactNo;
-    float salary, advance, total;
+    int salary;
+    float advance, total, due, paidAmount;
     struct dateStructure date;
 
 } staff;
@@ -526,8 +527,8 @@ void modifyStudent()
         printf("\n\t******************************************************************");
         printf("\n\n\t\tPLEASE CHOOSE MODIFY TYPE::");
         printf("\n\n\t\t1::Modify by name::");
-        printf("\n\n\t\t2::Modify by name &class::");
-        printf("\n\n\t\t3::Modify by name,class & rollno::");
+        printf("\n\n\t\t2::Modify by name &Rollno::");
+        printf("\n\n\t\t3::Modify by name,program & rollno::");
         printf("\n\n\t\t4::Exit");
         printf("\n\n\t\t::Enter your choice:: ");
         fflush(stdin);
@@ -627,7 +628,20 @@ void modifyStudent()
                     scanf("%2d", &month);
                     printf("\nDay:");
                     scanf("%2d", &day);
-                    fflush(stdin);
+                    student.total = ((tm.tm_mon + 1) * student.fee) + (tm.tm_mday * (student.fee / 30));
+                    float feePaidUpTo = ((month)*student.fee) + (day * (student.fee / 30));
+                    if ((feePaidUpTo > student.total))
+                    {
+                        student.advance = feePaidUpTo - student.total;
+                        student.due = 0;
+                        student.fine = 0;
+                    }
+                    else
+                    {
+                        student.advance = 0;
+                        student.due = student.total - feePaidUpTo;
+                        student.fine = (student.total - feePaidUpTo) * 0.1;
+                    }
                     fseek(fs, -sizeof(student), SEEK_CUR);
                     fwrite(&student, sizeof(struct studentStructure), 1, fs);
                     fclose(fs);
@@ -682,7 +696,20 @@ void modifyStudent()
                     scanf("%2d", &month);
                     printf("\nDay:");
                     scanf("%2d", &day);
-                    fflush(stdin);
+                    student.total = ((tm.tm_mon + 1) * student.fee) + (tm.tm_mday * (student.fee / 30));
+                    float feePaidUpTo = ((month)*student.fee) + (day * (student.fee / 30));
+                    if ((feePaidUpTo > student.total))
+                    {
+                        student.advance = feePaidUpTo - student.total;
+                        student.due = 0;
+                        student.fine = 0;
+                    }
+                    else
+                    {
+                        student.advance = 0;
+                        student.due = student.total - feePaidUpTo;
+                        student.fine = (student.total - feePaidUpTo) * 0.1;
+                    }
                     fseek(fs, -sizeof(student), SEEK_CUR);
                     fwrite(&student, sizeof(struct studentStructure), 1, fs);
                     fclose(fs);
@@ -769,8 +796,8 @@ void deleteStudent()
 //---------------------------------------------------add staff------------------------------------------------------------------
 void addStaff()
 {
-    float ff;
-    time_t t;
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
     char c = 'y';
     system("cls");
     printf("\n\t   ******************************************************************");
@@ -794,6 +821,27 @@ void addStaff()
         scanf("%d", &staff.contactNo);
         printf("\nEnter salary(int):");
         scanf("%d", &staff.salary);
+        printf("\nEnter month  till which Salary is paid:");
+        fflush(stdin);
+        printf("\nMonth:");
+        scanf("%2d", &staff.date.month);
+        printf("\nDay:");
+        scanf("%2d", &staff.date.day);
+
+        staff.total = ((tm.tm_mon + 1) * staff.salary) + (tm.tm_mday * (staff.salary / 30));
+        float salaryPaidUpTo = ((staff.date.month) * staff.salary) + (staff.date.day * (staff.salary / 30));
+        if ((salaryPaidUpTo > staff.total))
+        {
+            staff.advance = salaryPaidUpTo - student.total;
+            staff.due = 0;
+            staff.paidAmount = salaryPaidUpTo;
+        }
+        else
+        {
+            staff.advance = 0;
+            staff.due = student.total - salaryPaidUpTo;
+            staff.paidAmount = salaryPaidUpTo;
+        }
 
         ft = fopen("staff.txt", "ab+"); // opening a binary file in apend mode
         fwrite(&staff, sizeof(struct staffStructure), 1, ft);
@@ -853,6 +901,11 @@ void searchStaff()
                     printf("\nSubject = %s", staff.address);
                     printf("\nSalary =%d", staff.salary);
                     printf("\nContact =%d", staff.contactNo);
+                    printf("\nTotal Salary  =%f", staff.total);
+                    printf("\nPaid Salary  =%f", staff.paidAmount);
+                    printf("\nDue =%f", staff.due);
+                    printf("\nAdvance  =%f", staff.advance);
+                    printf("\n");
                     printf("\n");
                 }
             }
@@ -882,6 +935,11 @@ void searchStaff()
                     printf("\nSubject = %s", staff.address);
                     printf("\nSalary =%d", staff.salary);
                     printf("\nContact =%d", staff.contactNo);
+                    printf("\nTotal Salary  =%f", staff.total);
+                    printf("\nPaid Salary  =%f", staff.paidAmount);
+                    printf("\nDue =%f", staff.due);
+                    printf("\nAdvance  =%f", staff.advance);
+                    printf("\n");
                     printf("\n");
                 }
             }
@@ -907,11 +965,17 @@ void searchStaff()
                 if (strcmpi(degree, staff.degree) == 0)
                 {
                     a = 0;
+                    a = 0;
                     printf("\nName = %s", staff.name);
                     printf("\nDegree = %s", staff.degree);
                     printf("\nSubject = %s", staff.address);
                     printf("\nSalary =%d", staff.salary);
                     printf("\nContact =%d", staff.contactNo);
+                    printf("\nTotal Salary  =%f", staff.total);
+                    printf("\nPaid Salary  =%f", staff.paidAmount);
+                    printf("\nDue =%f", staff.due);
+                    printf("\nAdvance  =%f", staff.advance);
+                    printf("\n");
                     printf("\n");
                 }
             }
@@ -937,11 +1001,17 @@ void searchStaff()
                 if (contact == staff.contactNo)
                 {
                     a = 0;
+                    a = 0;
                     printf("\nName = %s", staff.name);
                     printf("\nDegree = %s", staff.degree);
                     printf("\nSubject = %s", staff.address);
                     printf("\nSalary =%d", staff.salary);
                     printf("\nContact =%d", staff.contactNo);
+                    printf("\nTotal Salary  =%f", staff.total);
+                    printf("\nPaid Salary  =%f", staff.paidAmount);
+                    printf("\nDue =%f", staff.due);
+                    printf("\nAdvance  =%f", staff.advance);
+                    printf("\n");
                     printf("\n");
                 }
             }
@@ -974,6 +1044,8 @@ void searchStaff()
 //------------------------------------------------modifiy staff----------------------------------------------------------------------
 void modifyStaff()
 {
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);
     char name[50];
     int a = 1, choice;
     char c = 'y';
@@ -1019,7 +1091,26 @@ void modifyStaff()
                     scanf("%d", &staff.contactNo);
                     printf("\nEnter salary(int):");
                     scanf("%d", &staff.salary);
+                    printf("\nEnter month  till which Salary is paid:");
                     fflush(stdin);
+                    printf("\nMonth:");
+                    scanf("%2d", &staff.date.month);
+                    printf("\nDay:");
+                    scanf("%2d", &staff.date.day);
+                    staff.total = ((tm.tm_mon + 1) * staff.salary) + (tm.tm_mday * (staff.salary / 30));
+                    float salaryPaidUpTo = ((staff.date.month) * staff.salary) + (staff.date.day * (staff.salary / 30));
+                    if ((salaryPaidUpTo > staff.total))
+                    {
+                        staff.advance = salaryPaidUpTo - student.total;
+                        staff.due = 0;
+                        staff.paidAmount = salaryPaidUpTo;
+                    }
+                    else
+                    {
+                        staff.advance = 0;
+                        staff.due = student.total - salaryPaidUpTo;
+                        staff.paidAmount = salaryPaidUpTo;
+                    }
 
                     fseek(ft, -sizeof(staff), SEEK_CUR);
                     fwrite(&staff, sizeof(struct staffStructure), 1, ft);
