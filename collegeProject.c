@@ -35,19 +35,6 @@ struct staffStructure
 } staff;
 void start();
 
-int chkdat(int mnt, int dnt)
-{
-    int mon, day;
-    if (mnt > 12 || mnt < 1 || dnt < 1 || dnt > 32)
-    {
-        MessageBox(0, "Invalid Date!\nEnter Again", "Error!", 0);
-        fflush(stdin);
-        scanf("%d%d", &mon, &day);
-        mon = chkdat(mon, day);
-    }
-    else
-        return (mnt);
-}
 void login()
 {
     int a = 0, i = 0;
@@ -101,7 +88,7 @@ void login()
     } while (a <= 2);
     if (a > 2)
     {
-        printf("\nSorry you have entered the wrong username and password for four times!!!");
+        printf("\n\t\t\tSorry you have entered the wrong username and password for four times!!!");
         getch();
         system("cls");
         exit(0);
@@ -159,9 +146,9 @@ void addStudent()
         scanf("%d", &student.fee);
         printf("\n\t\t\tEnter month  till which Fee is paid:");
         fflush(stdin);
-        printf("\n\t\t\tMonth:");
+        printf("\n\t\t\tMonth (int):");
         scanf("%2d", &student.date.month);
-        printf("\t\t\tDay:");
+        printf("\t\t\tDay (int):");
         scanf("%2d", &student.date.day);
 
         student.total = ((tm.tm_mon + 1) * student.fee) + (tm.tm_mday * (student.fee / 30));
@@ -196,7 +183,6 @@ void addStudent()
     printf("\n\n");
     system("pause");
 }
-
 //---------------------------------------------------------student fee---------------------------------------------
 void fee()
 {
@@ -229,9 +215,9 @@ void fee()
         {
             int a = 1, day = 0;
             fflush(stdin);
-            printf("\n\n\t\t\tEnter name:: ");
+            printf("\n\n\t\t\tEnter name (string):: ");
             scanf("%[^\n]", name);
-            printf("\n\n\t\t\tEnter roll:: ");
+            printf("\n\n\t\t\tEnter roll (int):: ");
             fflush(stdin);
             scanf("%d", &roll);
             f = fopen("student.txt", "rb+");
@@ -242,9 +228,9 @@ void fee()
                     a = 0;
                     printf("\n\n\t\t\tEnter the month & day till which fee to be Calculated:: ");
                     fflush(stdin);
-                    printf("\n\t\t\tMonth:");
+                    printf("\n\t\t\tMonth (int):");
                     scanf("%2d", &month);
-                    printf("\t\t\tDay:");
+                    printf("\t\t\tDay (int):");
                     scanf("%2d", &day);
                     if ((student.date.month + (student.date.day / 30)) > (month + (day / 30)))
                     {
@@ -297,9 +283,9 @@ void fee()
         {
             int a = 1, day = 0;
             fflush(stdin);
-            printf("\n\nEnter name:: ");
+            printf("\n\nEnter name (string):: ");
             scanf("%[^\n]", name);
-            printf("\n\nEnter roll:: ");
+            printf("\n\nEnter roll (int):: ");
             fflush(stdin);
             scanf("%d", &roll);
             f = fopen("student.txt", "rb+");
@@ -384,6 +370,9 @@ void searchStudent()
     while (c == 'y' || c == 'Y')
     {
         int a = 1;
+        char name[50];
+        int rollNo;
+        char program[50];
         system("cls");
         printf("\n\t**********************************************************************************");
         printf("\n\t***                                                                            ***");
@@ -401,13 +390,14 @@ void searchStudent()
         system("cls");
         if (choice == 1)
         {
-            char name[50];
+
             a = 1;
             printf("\n\nEnter name of student to search(string): ");
             fflush(stdin);
             scanf("%s", name);
             fs = fopen("student.txt", "rb");
-            printf("--------------Student Information------------------\n");
+            system("cls");
+            printf("\n\t--------------Student Information------------------\n");
             while (fread(&student, sizeof(struct studentStructure), 1, fs) == 1)
             {
                 if (strcmpi(name, student.name) == 0)
@@ -434,12 +424,12 @@ void searchStudent()
         }
         else if (choice == 2)
         {
-            int rollNo;
             a = 1;
             printf("\n\n\t\t\tEnter roll no of student(int): ");
             scanf("%d", &rollNo);
             fs = fopen("student.txt", "rb");
-            printf("--------------Student Information------------------\n");
+            system("cls");
+            printf("\n\t--------------Student Information------------------\n");
 
             while (fread(&student, sizeof(struct studentStructure), 1, fs) == 1)
             {
@@ -467,13 +457,13 @@ void searchStudent()
         }
         else if (choice == 3)
         {
-            char program[50];
             a = 1;
-            printf("\n\n\t\t\tEnter program of student to search(string): ");
+            printf("\n\n\t\t\tEnter program of student to search (string): ");
             scanf("%s", &program);
             fflush(stdin);
             fs = fopen("student.txt", "rb");
-            printf("--------------Student Information------------------\n");
+            system("cls");
+            printf("\n\t--------------Student Information------------------\n");
             while (fread(&student, sizeof(struct studentStructure), 1, fs) == 1)
             {
                 if (strcmpi(program, student.program) == 0)
@@ -501,6 +491,7 @@ void searchStudent()
         else if (choice == 4)
         {
             // ext();
+
             start();
         }
         else
@@ -535,18 +526,18 @@ void modifyStudent()
         printf("\n\t******                         MODIFY RECORD                                 *****");
         printf("\n\t***                                                                            ***");
         printf("\n\t**********************************************************************************");
-        printf("\n\n\t\\t\tPLEASE CHOOSE MODIFY TYPE::");
-        printf("\n\n\t\\t\t1::Modify by name::");
-        printf("\n\n\t\\t\t2::Modify by name &Rollno::");
-        printf("\n\n\t\\t\t3::Modify by name,program & rollno::");
-        printf("\n\n\t\\t\t4::Exit");
+        printf("\n\n\t\t\tPLEASE CHOOSE MODIFY TYPE::");
+        printf("\n\n\t\t\t1::Modify by name::");
+        printf("\n\n\t\t\t2::Modify by name &Rollno::");
+        printf("\n\n\t\t\t3::Modify by name,program & rollno::");
+        printf("\n\n\t\t\t4::Exit");
         printf("\n\n\t\t\t\t::Enter your choice:: ");
         fflush(stdin);
         scanf("%d", &choice);
         if (choice == 1)
         {
             int a = 0;
-            printf("\n\nenter name of student to modify(string): ");
+            printf("\n\t\t\tenter name of student to modify (string): ");
             fflush(stdin);
             scanf("%s", name);
             fs = fopen("student.txt", "rb+");
@@ -555,6 +546,9 @@ void modifyStudent()
                 a = 1;
                 if (strcmpi(name, student.name) == 0)
                 {
+                    system("cls");
+                    printf("\n\t\t\t\t    RECORD FOUND \n");
+                    printf("\t\t\t\t ENTER UPDATED DATA \n\n");
                     a = 0;
                     fflush(stdin);
                     printf("\n\t\t\tEnter Name of the student(string): ");
@@ -606,17 +600,22 @@ void modifyStudent()
         {
             int rollNo;
             int a = 0;
-            printf("\n\n\t\t\tEnter name of student to modify(string): ");
+            printf("\n\n\t\t\tEnter name of student to modify (string): ");
             fflush(stdin);
             scanf("%s", name);
-            printf("\n\n\t\t\tEnter roll no of student(int) : ");
+            printf("\n\n\t\t\tEnter roll no of student (int) : ");
             scanf("%d", &rollNo);
             fs = fopen("student.txt", "rb+");
             while (fread(&student, sizeof(struct studentStructure), 1, fs) == 1)
             {
+
                 a = 1;
                 if (strcmpi(name, student.name) == 0 && rollNo == student.roll)
                 {
+                    system("cls");
+                    printf("\n\t\t\t\t RECORD FOUND \n\n");
+                    printf("\t\t\t\t ENTER UPDATED DATA \n\n");
+
                     a = 0;
                     fflush(stdin);
                     printf("\n\t\t\tEnter Name of the student(string): ");
@@ -670,13 +669,13 @@ void modifyStudent()
             int rollNo;
             int a = 0;
             fflush(stdin);
-            printf("\n\t\t\tEnter New  name of the student(string): ");
+            printf("\n\t\t\tEnter New  name of the student (string): ");
             scanf("%s", student.name);
             fflush(stdin);
-            printf("\n\t\t\t Enter new the program(string): ");
+            printf("\n\t\t\t Enter new the program (string): ");
             scanf("%s", program);
             fflush(stdin);
-            printf("\n\t\t\tEnter new Roll No.(int):");
+            printf("\n\t\t\tEnter new Roll No. (int):");
             scanf("%d", &rollNo);
 
             fs = fopen("student.txt", "rb+");
@@ -685,6 +684,9 @@ void modifyStudent()
                 a = 1;
                 if (strcmpi(name, student.name) == 0 && rollNo == student.roll && strcmpi(program, student.program) == 0)
                 {
+                    system("cls");
+                    printf("\n\t\t\t\t RECORD FOUND \n\n");
+                    printf("\t\t\t\t ENTER UPDATED DATA \n\n");
                     a = 0;
                     fflush(stdin);
                     printf("\n\t\t\tEnter Name of the student(string): ");
@@ -766,10 +768,10 @@ void deleteStudent()
     while (c == 'y' || c == 'Y')
     {
         int a = 1;
-        printf("\n\n\t\t\tEnter name of student to delete(string): ");
+        printf("\n\n\t\t\tEnter name of student to delete (string): ");
         fflush(stdin);
         scanf("%s", name);
-        fs = fopen("student.txt", "rb");
+        fs = fopen("student.txt", "ab+");
         temp = fopen("delete.tmp", "wb"); // opening of temporary file for deleting process
         while (fread(&student, sizeof(struct studentStructure), 1, fs) == 1)
         {
@@ -822,24 +824,24 @@ void addStaff()
     {
         int a = 1;
         fflush(stdin);
-        printf("\n\t\t\tEnter  Name of the staff(string): ");
+        printf("\n\t\t\tEnter  Name of the staff (string): ");
         scanf("%s", staff.name);
         fflush(stdin);
-        printf("\n\t\t\tEnter the Address(string): ");
+        printf("\n\t\t\tEnter the Address (string): ");
         scanf("%s", staff.address);
         fflush(stdin);
-        printf("\n\t\t\tEnter your Degree(string): ");
+        printf("\n\t\t\tEnter your Degree (string): ");
         scanf("%s", staff.degree);
         fflush(stdin);
-        printf("\n\t\t\tEnter contact No.(int):");
+        printf("\n\t\t\tEnter contact No. (int):");
         scanf("%d", &staff.contactNo);
-        printf("\n\t\t\tEnter salary(int):");
+        printf("\n\t\t\tEnter salary (int):");
         scanf("%d", &staff.salary);
         printf("\n\t\t\tEnter month  till which Salary is paid:");
         fflush(stdin);
-        printf("\n\t\t\tMonth:");
+        printf("\n\t\t\tMonth (int):");
         scanf("%2d", &staff.date.month);
-        printf("\n\t\t\tDay:");
+        printf("\n\t\t\tDay (int):");
         scanf("%2d", &staff.date.day);
 
         staff.total = ((tm.tm_mon + 1) * staff.salary) + (tm.tm_mday * (staff.salary / 30));
@@ -901,7 +903,7 @@ void searchStaff()
         {
             char name[50];
             a = 1;
-            printf("\n\n\t\t\tEnter name of staff to search(string): ");
+            printf("\n\n\t\t\tEnter name of staff to search (string): ");
             fflush(stdin);
             scanf("%s", name);
             ft = fopen("staff.txt", "rb");
@@ -936,7 +938,7 @@ void searchStaff()
         {
             char address[50];
             a = 1;
-            printf("\n\n\t\t\tEnter address of staff(string): ");
+            printf("\n\n\t\t\tEnter address of staff (string): ");
             scanf("%s", address);
             ft = fopen("staff.txt", "rb");
             system("cls");
@@ -972,7 +974,7 @@ void searchStaff()
         {
             char degree[50];
             a = 1;
-            printf("\n\n\t\t\tEnter degree of staff to search(string): ");
+            printf("\n\n\t\t\tEnter degree of staff to search (string): ");
             scanf("%s", &degree);
             fflush(stdin);
             ft = fopen("staff.txt", "rb");
@@ -1091,7 +1093,7 @@ void modifyStaff()
         if (choice == 1)
         {
             int a = 0;
-            printf("\n\nEnter name of staff to modify(string): ");
+            printf("\n\nEnter name of staff to modify (string): ");
             fflush(stdin);
             scanf("%s", name);
             ft = fopen("staff.txt", "rb+");
@@ -1102,24 +1104,24 @@ void modifyStaff()
                 {
                     a = 0;
                     fflush(stdin);
-                    printf("\n\t\t\tEnter  Name of the staff(string): ");
+                    printf("\n\t\t\tEnter  Name of the staff (string): ");
                     scanf("%s", staff.name);
                     fflush(stdin);
-                    printf("\n\t\t\tEnter the Address(string): ");
+                    printf("\n\t\t\tEnter the Address (string): ");
                     scanf("%s", staff.address);
                     fflush(stdin);
-                    printf("\n\t\t\tEnter your Degree(string): ");
+                    printf("\n\t\t\tEnter your Degree (string): ");
                     scanf("%s", staff.degree);
                     fflush(stdin);
-                    printf("\n\t\t\tEnter contact No.(int):");
+                    printf("\n\t\t\tEnter contact No. (int):");
                     scanf("%d", &staff.contactNo);
-                    printf("\n\t\t\tEnter salary(int):");
+                    printf("\n\t\t\tEnter salary (int):");
                     scanf("%d", &staff.salary);
                     printf("\n\t\t\tEnter month  till which Salary is paid:");
                     fflush(stdin);
-                    printf("\n\t\t\tMonth:");
+                    printf("\n\t\t\tMonth (int):");
                     scanf("%2d", &staff.date.month);
-                    printf("\n\t\t\tDay:");
+                    printf("\n\t\t\tDay (int):");
                     scanf("%2d", &staff.date.day);
                     staff.total = ((tm.tm_mon + 1) * staff.salary) + (tm.tm_mday * (staff.salary / 30));
                     float salaryPaidUpTo = ((staff.date.month) * staff.salary) + (staff.date.day * (staff.salary / 30));
@@ -1152,7 +1154,7 @@ void modifyStaff()
         {
             char address[50];
             int a = 0;
-            printf("\n\n\t\t\tEnter name of staff to modify(string): ");
+            printf("\n\n\t\t\tEnter name of staff to modify (string): ");
             fflush(stdin);
             scanf("%s", name);
             printf("\n\n\t\t\tEnter address no of staff (string): ");
@@ -1162,7 +1164,7 @@ void modifyStaff()
             while (fread(&staff, sizeof(struct staffStructure), 1, ft) == 1)
             {
                 a = 1;
-                if (strcmpi(name, staff.name) == 0 && strcmpi(address, staff.address))
+                if (strcmpi(name, staff.name) == 0 && strcmpi(address, staff.address) == 0)
                 {
                     a = 0;
                     fflush(stdin);
@@ -1181,9 +1183,9 @@ void modifyStaff()
                     scanf("%d", &staff.salary);
                     printf("\n\t\t\tEnter month  till which Salary is paid:");
                     fflush(stdin);
-                    printf("\n\t\t\tMonth:");
+                    printf("\n\t\t\tMonth (int):");
                     scanf("%2d", &staff.date.month);
-                    printf("\n\t\t\tDay:");
+                    printf("\n\t\t\tDay (int):");
                     scanf("%2d", &staff.date.day);
                     staff.total = ((tm.tm_mon + 1) * staff.salary) + (tm.tm_mday * (staff.salary / 30));
                     float salaryPaidUpTo = ((staff.date.month) * staff.salary) + (staff.date.day * (staff.salary / 30));
@@ -1250,9 +1252,9 @@ void modifyStaff()
                     scanf("%d", &staff.salary);
                     printf("\n\t\t\tEnter month  till which Salary is paid:");
                     fflush(stdin);
-                    printf("\n\t\t\tMonth:");
+                    printf("\n\t\t\tMonth (int):");
                     scanf("%2d", &staff.date.month);
-                    printf("\n\t\t\tDay:");
+                    printf("\n\t\t\tDay (int):");
                     scanf("%2d", &staff.date.day);
                     staff.total = ((tm.tm_mon + 1) * staff.salary) + (tm.tm_mday * (staff.salary / 30));
                     float salaryPaidUpTo = ((staff.date.month) * staff.salary) + (staff.date.day * (staff.salary / 30));
@@ -1315,10 +1317,10 @@ void deleteStaff()
     while (c == 'y' || c == 'Y')
     {
         int a = 1;
-        printf("\n\n\t\t\tEnter name of staff to delete(string): ");
+        printf("\n\n\t\t\tEnter name of staff to delete (string): ");
         fflush(stdin);
         scanf("%s", name);
-        ft = fopen("staff.txt", "rb");
+        ft = fopen("staff.txt", "ab+");
         temp1 = fopen("deleteStaff.tmp", "wb"); // opening of temporary file for deleting process
         while (fread(&staff, sizeof(struct staffStructure), 1, ft) == 1)
         {
@@ -1384,9 +1386,9 @@ void salary()
         {
             int a = 1, day = 0;
             fflush(stdin);
-            printf("\n\n\t\t\tEnter name:: ");
+            printf("\n\n\t\t\tEnter name (string):: ");
             scanf("%[^\n]", name);
-            printf("\n\n\t\t\tEnter phone no:: ");
+            printf("\n\n\t\t\tEnter phone no (int):: ");
             fflush(stdin);
             scanf("%d", &phoneNo);
             f = fopen("staff.txt", "rb+");
@@ -1397,9 +1399,9 @@ void salary()
                     a = 0;
                     printf("\n\n\t\t\tEnter the month & day till which salary to be Calculated:: ");
                     fflush(stdin);
-                    printf("\n\t\t\tMonth:");
+                    printf("\n\t\t\tMonth (int):");
                     scanf("%2d", &month);
-                    printf("\n\t\t\tDay:");
+                    printf("\n\t\t\tDay (int):");
                     scanf("%2d", &day);
                     if ((staff.date.month + (staff.date.day / 30)) > (month + (day / 30)))
                     {
@@ -1452,9 +1454,9 @@ void salary()
         {
             int a = 1, day = 0;
             fflush(stdin);
-            printf("\n\n\t\t\tEnter name:: ");
+            printf("\n\n\t\t\tEnter name (string):: ");
             scanf("%[^\n]", name);
-            printf("\n\n\t\t\tEnter roll:: ");
+            printf("\n\n\t\t\tEnter roll (int):: ");
             fflush(stdin);
             scanf("%d", &phoneNo);
             f = fopen("staff.txt", "rb+");
@@ -1465,9 +1467,9 @@ void salary()
                     a = 0;
                     printf("\n\n\t\t\tEnter the month & day till which salary  to be Calculated:: ");
                     fflush(stdin);
-                    printf("\n\t\t\tMonth:");
+                    printf("\n\t\t\tMonth (int):");
                     scanf("%2d", &month);
-                    printf("\n\t\t\tDay:");
+                    printf("\n\t\t\tDay (int):");
                     scanf("%2d", &day);
 
                     system("cls");
@@ -1533,11 +1535,11 @@ void start()
     printf("\n\t   ***                                                                      ***");
     printf("\n\t   ****************************************************************************");
     printf("\n");
-    printf("\n\t\t1->> Student");
-    printf("\n\t\t2->> Teacher & Staffs");
-    printf("\n\t\t3->> Exit");
+    printf("\n\t\t\t\t1->> Student");
+    printf("\n\t\t\t\t2->> Teacher & Staffs");
+    printf("\n\t\t\t\t3->> Exit");
     printf("\n");
-    printf("\n\t\t Enter Your Account Type :- ");
+    printf("\n\t\t\t\t Enter Your Account Type :- ");
     fflush(stdin);
     scanf("%d", &j);
     switch (j)
